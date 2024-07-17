@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  sqlcontainerdemo:
+    image: my_sqlserver_image
+    container_name: my_sqlserver_container
+    build:
+      context: .
+      dockerfile: SQLContainerDemo/Dockerfile
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    command: /bin/bash -c "/opt/mssql/bin/sqlservr & sleep 30s & /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -d master -i SQLContainerDemo/init.sql & tail -f /dev/null"
+
+
+volumes:
+  sqlserver_data:
